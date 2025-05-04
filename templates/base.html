@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Sistem Pemasaran PNKD - Dashboard and management system" />
+    <link rel="icon" href="{{ url_for('static', filename='logo.png') }}" type="image/png" />
+    <title>{% block title %}Sistem Pemasaran PNKD{% endblock %}</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Roboto+Slab&display=swap');
+        body {
+            font-family: 'Roboto Slab', serif;
+        }
+        @keyframes marquee {
+            0% { transform: translateX(100%); }
+            100% { transform: translateX(-100%); }
+        }
+        .marquee {
+            overflow: hidden;
+            white-space: nowrap;
+            display: block;
+            animation: marquee 10s linear infinite;
+        }
+    </style>
+</head>
+<body class="bg-white flex min-h-screen text-gray-900" aria-label="Main layout">
+    <!-- Sidebar -->
+    <input type="checkbox" id="sidebar-toggle" class="hidden" />
+    <div class="bg-gray-900 text-white w-64 h-screen fixed transform -translate-x-full md:translate-x-0 transition-transform duration-300 ease-in-out z-30 shadow-lg" aria-label="Sidebar navigation" role="navigation">
+        <div class="p-6 flex flex-col h-full">
+            <!-- Logo -->
+            <div class="flex items-center mb-8">
+                <img src="{{ url_for('static', filename='logo.png') }}" alt="PNKD Logo" class="h-10 mr-3" />
+                <h1 class="text-2xl font-extrabold tracking-wide">PNKD</h1>
+            </div>
+            <!-- Navigasi -->
+            <nav class="flex-1 space-y-3" aria-label="Primary">
+                <a href="{{ url_for('dashboard') }}" class="flex items-center py-3 px-5 rounded-lg hover:bg-gray-700 {% if request.endpoint == 'dashboard' %}bg-gray-800{% endif %} transition-colors duration-300" aria-current="{% if request.endpoint == 'dashboard' %}page{% else %}false{% endif %}">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M13 5v6h6" />
+                    </svg>
+                    <span class="text-lg font-semibold">Dashboard</span>
+                </a>
+                <a href="{{ url_for('products') }}" class="flex items-center py-3 px-5 rounded-lg hover:bg-gray-700 {% if request.endpoint == 'products' %}bg-gray-800{% endif %} transition-colors duration-300" aria-current="{% if request.endpoint == 'products' %}page{% else %}false{% endif %}">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V7a2 2 0 00-2-2h-4l-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2h12z" />
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 17v1a3 3 0 01-6 0v-1" />
+                    </svg>
+                    <span class="text-lg font-semibold">Produk</span>
+                </a>
+                <a href="{{ url_for('transactions') }}" class="flex items-center py-3 px-5 rounded-lg hover:bg-gray-700 {% if request.endpoint == 'transactions' %}bg-gray-800{% endif %} transition-colors duration-300" aria-current="{% if request.endpoint == 'transactions' %}page{% else %}false{% endif %}">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2a4 4 0 014-4h4" />
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 17v-2a4 4 0 014-4h4" />
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 17v-2a4 4 0 014-4h4" />
+                    </svg>
+                    <span class="text-lg font-semibold">Transaksi</span>
+                </a>
+                <a href="{{ url_for('reports') }}" class="flex items-center py-3 px-5 rounded-lg hover:bg-gray-700 {% if request.endpoint == 'reports' %}bg-gray-800{% endif %} transition-colors duration-300" aria-current="{% if request.endpoint == 'reports' %}page{% else %}false{% endif %}">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2a4 4 0 014-4h4" />
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 17v-2a4 4 0 014-4h4" />
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 17v-2a4 4 0 014-4h4" />
+                    </svg>
+                    <span class="text-lg font-semibold">Laporan</span>
+                </a>
+                {% if session.get('role') == 'admin' %}
+                <a href="{{ url_for('admin_users') }}" class="flex items-center py-3 px-5 rounded-lg hover:bg-gray-700 {% if request.endpoint == 'admin_users' %}bg-gray-800{% endif %} transition-colors duration-300" aria-current="{% if request.endpoint == 'admin_users' %}page{% else %}false{% endif %}">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0z" />
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14v7m-4-4h8" />
+                    </svg>
+                    <span class="text-lg font-semibold">Pengurusan Pengguna</span>
+                </a>
+                {% endif %}
+            </nav>
+            <!-- Log Keluar (di Bawah) -->
+            <div class="mt-auto">
+                <!-- Removed Log Keluar link as it is in profile menu -->
+            </div>
+        </div>
+    </div>
+    <!-- Hamburger button for mobile -->
+    <label for="sidebar-toggle" class="fixed top-4 left-4 z-40 cursor-pointer md:hidden p-2 rounded-md bg-gray-900 text-white hover:bg-gray-800" aria-label="Toggle sidebar menu" role="button" tabindex="0">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+        </svg>
+    </label>
+    <!-- Kandungan Utama -->
+    <div class="ml-0 md:ml-64 p-8 w-full flex flex-col min-h-screen bg-white rounded-lg shadow-lg">
+        <!-- Centered Title -->
+        <div class="flex justify-center items-center mb-6">
+            <h1 class="text-4xl font-extrabold text-gray-900 tracking-wide">SISTEM PEMASARAN PNKD</h1>
+        </div>
+        <!-- Selamat Datang (Atas Kanan) -->
+        <div class="flex justify-between items-center mb-6">
+            <p class="text-base text-gray-700 marquee font-semibold">Selamat Datang, {{ username | default('Pengguna') }}</p>
+            <div class="relative inline-block text-left" x-data="{ open: false }">
+                <button type="button" class="inline-flex justify-center w-full rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50" id="menu-button" aria-expanded="true" aria-haspopup="true" onclick="document.getElementById('user-menu').classList.toggle('hidden')">
+                    Profil
+                    <svg class="-mr-1 ml-2 h-5 w-5 text-gray-700" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                    </svg>
+                </button>
+                <div id="user-menu" class="origin-top-right absolute right-0 mt-2 w-40 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 hidden" role="menu" aria-orientation="vertical" aria-labelledby="menu-button" tabindex="-1">
+                    <a href="{{ url_for('logout') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem" tabindex="-1" id="menu-item-1">Log Keluar</a>
+                </div>
+            </div>
+        </div>
+        <!-- Flash message area -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <div id="flashMessages" class="mb-6">
+                    {% for category, message in messages %}
+                        <div class="p-4 rounded mb-3 text-white {% if category == 'error' %}bg-red-600{% elif category == 'success' %}bg-green-600{% else %}bg-gray-800{% endif %}">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+        {% block content %}
+        {% endblock %}
+        <!-- Footer -->
+        <footer class="mt-auto text-center text-gray-600 text-sm py-6">
+            &copy; {{ current_year }} Sistem Pemasaran PNKD. All rights reserved.
+        </footer>
+    </div>
+    <script>
+        // Close user menu when clicking outside
+        document.addEventListener('click', function(event) {
+            var userMenu = document.getElementById('user-menu');
+            var button = document.getElementById('menu-button');
+            if (userMenu && !userMenu.contains(event.target) && !button.contains(event.target)) {
+                userMenu.classList.add('hidden');
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+
+{% block title %}Edit Pengguna - Sistem Pemasaran PNKD{% endblock %}
+
+{% block content %}
+<h2 class="text-2xl font-semibold mb-4 text-gray-900">Edit Pengguna</h2>
+
+<form method="POST" action="{{ url_for('edit_user', username=user['username']) }}" class="max-w-md bg-white p-6 rounded shadow">
+    <div class="mb-4">
+        <label for="username" class="block text-sm font-medium text-gray-700 mb-1">Nama Pengguna</label>
+        <input type="text" id="username" name="username" value="{{ user['username'] }}" required class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-gray-700" />
+    </div>
+    <div class="mb-4">
+        <label for="password" class="block text-sm font-medium text-gray-700 mb-1">Kata Laluan (biarkan kosong jika tidak mahu tukar)</label>
+        <input type="password" id="password" name="password" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-gray-700" />
+    </div>
+    <div class="mb-4">
+        <label for="role" class="block text-sm font-medium text-gray-700 mb-1">Peranan</label>
+        <select id="role" name="role" required class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-gray-700">
+            <option value="admin" {% if user['role'] == 'admin' %}selected{% endif %}>Admin</option>
+            <option value="user" {% if user['role'] == 'user' %}selected{% endif %}>User</option>
+        </select>
+    </div>
+    <div class="flex space-x-4">
+        <button type="submit" class="bg-gray-800 text-white px-4 py-2 rounded hover:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-gray-700">Simpan</button>
+        <a href="{{ url_for('admin_users') }}" class="bg-gray-300 text-gray-700 px-4 py-2 rounded hover:bg-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-400">Batal</a>
+    </div>
+</form>
+{% endblock %}

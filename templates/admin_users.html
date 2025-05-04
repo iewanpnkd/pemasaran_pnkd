@@ -1,0 +1,72 @@
+{% extends 'base.html' %}
+
+{% block title %}Pengurusan Pengguna - Sistem Pemasaran PNKD{% endblock %}
+
+{% block content %}
+<h2 class="text-2xl font-semibold mb-4 text-gray-900">Pengurusan Pengguna</h2>
+
+{% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+    <div class="mb-4">
+      {% for category, message in messages %}
+        <div class="p-2 mb-2 rounded {% if category == 'success' %}bg-green-200 text-green-800{% else %}bg-red-200 text-red-800{% endif %}">
+          {{ message }}
+        </div>
+      {% endfor %}
+    </div>
+  {% endif %}
+{% endwith %}
+
+<h3 class="text-xl font-semibold mb-2 text-gray-900">Senarai Pengguna</h3>
+<table class="min-w-full bg-white rounded shadow overflow-hidden border border-gray-300 border-collapse outline outline-2 outline-gray-300 mb-6">
+  <thead class="bg-gray-100 border border-gray-300">
+    <tr>
+      <th class="py-3 px-6 border border-gray-300 text-left text-gray-700 font-semibold">ID Pengguna</th>
+      <th class="py-3 px-6 border border-gray-300 text-left text-gray-700 font-semibold">Nama Pengguna</th>
+      <th class="py-3 px-6 border border-gray-300 text-left text-gray-700 font-semibold">Peranan</th>
+      <th class="py-3 px-6 border border-gray-300 text-left text-gray-700 font-semibold">Tindakan</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for user in users %}
+    <tr class="border-b border-gray-300 hover:bg-gray-50">
+      <td class="py-3 px-6 border border-gray-300 text-gray-900">{{ user['id'] }}</td>
+      <td class="py-3 px-6 border border-gray-300 text-gray-900">{{ user['username'] }}</td>
+      <td class="py-3 px-6 border border-gray-300 text-gray-900">{{ user['role'] }}</td>
+      <td class="py-3 px-6 border border-gray-300">
+        <a href="{{ url_for('edit_user', username=user['username']) }}" class="bg-yellow-500 text-white px-4 py-1 rounded hover:bg-yellow-600 mr-3">Edit</a>
+        <form method="POST" action="{{ url_for('delete_user', username=user['username']) }}" onsubmit="return confirm('Adakah anda pasti mahu memadam pengguna ini?');" class="inline">
+          <button type="submit" class="bg-red-600 text-white px-4 py-1 rounded hover:bg-red-700">Padam</button>
+        </form>
+      </td>
+    </tr>
+    {% else %}
+    <tr>
+      <td colspan="4" class="text-center py-4 text-gray-500 border border-gray-300">Tiada pengguna dijumpai.</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+<h3 class="text-xl font-semibold mb-2 text-gray-900">Tambah Pengguna Baru</h3>
+<form action="{{ url_for('add_user') }}" method="POST" class="max-w-md space-y-4">
+  <div>
+    <label for="username" class="block text-sm font-medium text-gray-700">Nama Pengguna</label>
+    <input type="text" name="username" id="username" required class="mt-1 block w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-gray-600" />
+  </div>
+  <div>
+    <label for="password" class="block text-sm font-medium text-gray-700">Kata Laluan</label>
+    <input type="password" name="password" id="password" required class="mt-1 block w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-gray-600" />
+  </div>
+  <div>
+    <label for="role" class="block text-sm font-medium text-gray-700">Peranan</label>
+    <select name="role" id="role" required class="mt-1 block w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-gray-600">
+      <option value="user">User</option>
+      <option value="admin">Admin</option>
+    </select>
+  </div>
+  <div>
+    <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Tambah Pengguna</button>
+  </div>
+</form>
+{% endblock %}

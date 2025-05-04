@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Log Masuk - Sistem Pemasaran PNKD</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            background-image: url('/static/background.jpg');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            height: 100vh;
+        }
+    </style>
+</head>
+<body class="flex items-center justify-center">
+    <div class="bg-white bg-opacity-90 p-8 rounded-xl shadow-2xl w-full max-w-md">
+        <h2 class="text-3xl font-bold mb-4 text-center text-gray-800">Sistem Pemasaran PNKD bagi tahun {{ current_year }}</h2>
+        {% if error %}
+            <p class="text-red-500 mb-4 text-center">{{ error }}</p>
+        {% endif %}
+        <form method="POST" action="{{ url_for('login') }}">
+            <div class="mb-4">
+                <label for="username" class="block text-sm font-medium text-gray-700">Nama Pengguna</label>
+                <input type="text" name="username" id="username" class="mt-1 p-3 w-full border rounded-md focus:ring-2 focus:ring-blue-500" required>
+            </div>
+            <div class="mb-4">
+                <label for="password" class="block text-sm font-medium text-gray-700">Kata Laluan</label>
+                <input type="password" name="password" id="password" class="mt-1 p-3 w-full border rounded-md focus:ring-2 focus:ring-blue-500" required>
+            </div>
+            <div class="mb-4 flex items-center">
+                <input type="checkbox" name="remember" id="remember" class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded">
+                <label for="remember" class="ml-2 block text-sm text-gray-700">Ingat Saya</label>
+            </div>
+            <button type="submit" class="w-full bg-blue-600 text-white p-3 rounded-md hover:bg-blue-700 transition duration-300">Log Masuk</button>
+        </form>
+    </div>
+</body>
+</html>

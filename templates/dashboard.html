@@ -1,0 +1,83 @@
+{% extends 'base.html' %}
+
+{% block title %}Dashboard - Sistem Pemasaran PNKD{% endblock %}
+
+{% block content %}
+<h2 class="text-2xl font-semibold mb-4 text-gray-900">Dashboard</h2>
+
+<div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+    <div class="bg-gray-800 text-white p-6 rounded-lg shadow-lg">
+        <h3 class="text-xl font-semibold mb-2">Jumlah Produk</h3>
+        <p class="text-4xl font-extrabold">{{ total_products }}</p>
+    </div>
+    <div class="bg-gray-800 text-white p-6 rounded-lg shadow-lg">
+        <h3 class="text-xl font-semibold mb-2">Jumlah Jualan (RM)</h3>
+        <p class="text-4xl font-extrabold">{{ "%.2f"|format(total_sales) }}</p>
+    </div>
+    <div class="bg-gray-800 text-white p-6 rounded-lg shadow-lg">
+        <h3 class="text-xl font-semibold mb-2">Untung/Rugi Keseluruhan (RM)</h3>
+        <p class="text-4xl font-extrabold">{{ "%.2f"|format(overall_profit_loss) }}</p>
+    </div>
+    <div class="bg-gray-800 text-white p-6 rounded-lg shadow-lg">
+        <h3 class="text-xl font-semibold mb-2">Untung/Rugi Bulan Semasa (RM)</h3>
+        <p class="text-4xl font-extrabold">{{ "%.2f"|format(current_month_profit_loss) }}</p>
+    </div>
+</div>
+
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+    <div>
+        <h3 class="text-xl font-semibold mb-2 text-gray-900">5 Aktiviti Transaksi Terkini</h3>
+        <table class="min-w-full bg-white rounded shadow overflow-hidden border border-gray-700 border-collapse outline outline-2 outline-gray-700">
+            <thead class="bg-gray-200 border border-gray-700">
+                <tr>
+                    <th class="py-2 px-4 border border-gray-700 text-gray-900">Tarikh</th>
+                    <th class="py-2 px-4 border border-gray-700 text-gray-900">Kod Transaksi</th>
+                    <th class="py-2 px-4 border border-gray-700 text-gray-900">Nama Produk</th>
+                    <th class="py-2 px-4 border border-gray-700 text-gray-900">Jenis</th>
+                    <th class="py-2 px-4 border border-gray-700 text-right text-gray-900">Jumlah (RM)</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for t in recent_transactions %}
+                <tr class="border-b border-gray-700 hover:bg-gray-100">
+                    <td class="py-2 px-4 border border-gray-700 text-gray-900">{{ t['tarikh'] }}</td>
+                    <td class="py-2 px-4 border border-gray-700 text-gray-900">{{ t['kod_transaksi'] }}</td>
+                    <td class="py-2 px-4 border border-gray-700 text-gray-900">{{ t['nama_produk'] }}</td>
+                    <td class="py-2 px-4 border border-gray-700 text-gray-900">{{ t['jenis_transaksi'] }}</td>
+                    <td class="py-2 px-4 border border-gray-700 text-right text-gray-900">{{ "%.2f"|format(t['jumlah']) }}</td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="5" class="text-center py-4 text-gray-600 border border-gray-700">Tiada transaksi dijumpai.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <div>
+        <h3 class="text-xl font-semibold mb-2 text-gray-900">Senarai Produk Kekurangan Stok</h3>
+        <table class="min-w-full bg-white rounded shadow overflow-hidden border border-gray-700 border-collapse outline outline-2 outline-gray-700">
+            <thead class="bg-gray-200 border border-gray-700">
+                <tr>
+                    <th class="py-2 px-4 border border-gray-700 text-gray-900">Nama Produk</th>
+                    <th class="py-2 px-4 border border-gray-700 text-right text-gray-900">Stok Semasa (KG)</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for p in low_stock_products %}
+                <tr class="border-b border-gray-700 hover:bg-gray-100">
+                    <td class="py-2 px-4 border border-gray-700 text-gray-900">{{ p['nama_produk'] }}</td>
+                    <td class="py-2 px-4 border border-gray-700 text-right {% if p['stok'] < p['threshold'] %}text-red-600 font-bold{% else %}text-green-600 font-bold{% endif %}">{{ p['stok']|int }}</td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="2" class="text-center py-4 text-gray-600 border border-gray-700">Tiada produk kekurangan stok.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+{% endblock %}
